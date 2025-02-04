@@ -8,13 +8,17 @@
     "build:rsbuild": "rsbuild build",
     "build:webpack": "cross-env WEBPACK=1 webpack -c ./rspack.config.mjs",
     "dev:rspack": "cross-env RSPACK=1 rspack dev",
+    "dev:rspack:es5": "cross-env ES5=1 RSPACK=1 rspack dev",
     "dev:rsbuild": "rsbuild dev",
     "dev:webpack": "cross-env WEBPACK=1 webpack serve -c ./rspack.config.mjs"
   },
   "dependencies": {
     "@rspack/cli": "^1.1.8",
     "@rspack/core": "^1.1.8",
+    "@swc/helpers": "^0.5.15",
+    "core-js": "^3.40.0",
     "html-webpack-plugin": "^5.6.3",
+    "stylis": "^4.3.5",
     "webpack": "^5.97.1",
     "webpack-cli": "^6.0.1"
   },

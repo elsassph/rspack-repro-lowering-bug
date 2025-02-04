@@ -9,6 +9,22 @@ if (!isRunningRspack && !isRunningWebpack) {
   throw new Error("Unknown bundler");
 }
 
+function getSwcOptions(es5) {
+  return es5 === "1"
+    ? {
+        isModule: "unknown", // autodetect ESM vs CJS
+        jsc: {
+          externalHelpers: true,
+        },
+        env: {
+          mode: "usage",
+          coreJs: "3.40.0",
+          target: "es2015",
+        },
+      }
+    : undefined;
+}
+
 /**
  * @type {import('webpack').Configuration | import('@rspack/cli').Configuration}
  */
@@ -25,6 +41,28 @@ const config = {
       ? path.resolve(__dirname, "webpack-dist")
       : path.resolve(__dirname, "rspack-dist"),
     filename: "[name].js",
+  },
+  module: {
+    rules: [
+      // transpile and polyfill app code
+      {
+        test: /\.jsx?$/,
+        exclude: [/node_modules/],
+        loader: "builtin:swc-loader",
+        options: getSwcOptions(process.env.ES5),
+        type: "javascript/auto",
+      },
+
+      // transpile and polyfill 'external' NPM libraries
+      {
+        test: /\.m?js$/,
+        include: [/node_modules/],
+        exclude: [/node_modules(\/|\\)core-js/],
+        loader: "builtin:swc-loader",
+        options: getSwcOptions(process.env.ES5),
+        type: "javascript/auto",
+      },
+    ],
   },
   experiments: {
     css: true,
